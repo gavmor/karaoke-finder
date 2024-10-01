@@ -1,24 +1,18 @@
 import {h} from "preact"
-import {useState, useCallback, useRef, useEffect} from "preact/hooks"
-
+import {useState} from "preact/hooks"
+import {PitchDetector} from "pitchy"
 import "./app.css"
-
-const AnalyzeButton = ({onClick, isActive}) => {
-    return (
-        <button
-            className={`analyze-button ${isActive ? "active" : ""}`}
-            onClick={onClick}
-        >
-            {isActive ? "🎤 Listening..." : "🎤 Analyze"}
-        </button>
-
-    )
-}
+import {AnalyzeButton} from "./AnalyzeButton"
+import useAudioInput from "./useAudioInput"
 
 export function App() {
     const [isListening, setIsListening] = useState(false)
-    const toggleRecording = () => {setIsListening(prev => !prev)}
+    const toggleRecording = () => {
+        setIsListening((prev) => ! prev)
+    }
 
+    const {audioData, toggleListening} = useAudioInput()
+        console.log(audioData)
     return (
         <div className="vocal-range-finder">
             <header>
@@ -31,17 +25,12 @@ export function App() {
                 </section>
 
                 <section className="activity">
-                    <AnalyzeButton isActive={isListening} onClick={toggleRecording} />
+                    <AnalyzeButton isActive={isListening} onClick={toggleListening} />
                 </section>
 
+             <section className="results">{audioData}</section>
             </main>
 
         </div>
     )
 }
-
-test("App", {
-    "renders a greeting"() {
-        // expect(App().props.children, equals, "Hello from Preact!")
-    },
-})
